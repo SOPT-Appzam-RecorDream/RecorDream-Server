@@ -1,17 +1,27 @@
 import express, { Request, Response, NextFunction } from "express";
-const app = express();
 import connectDB from "./loaders/db";
 import routes from "./routes";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
 import path from "path";
+import cors from "cors";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
 
+const app = express();
 connectDB();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+const whitelist = ["https://recordream-web.vercel.app", "http://localhost:5173"];
+const corsOptions: cors.CorsOptions = {
+  origin: whitelist,
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 app.use(routes); //라우터
 // error handler
